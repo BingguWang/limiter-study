@@ -23,7 +23,7 @@ func (limit *ChannelLimiter) Allow() bool {
 	}
 }
 
-func channelHandler() gin.HandlerFunc {
+func ChannelHandler() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		instance := global.GetMyInstance()
 		traceId := ctx.Query("traceId")

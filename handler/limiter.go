@@ -5,35 +5,6 @@ import (
 	"sync"
 )
 
-// ------------- 漏桶限流器
-var (
-	myLeakyLimiterOnce sync.Once
-	myLeakyLimiter     *LeakyBucketLimiter
-)
-
-func NewLeakyBucketLimiter() *LeakyBucketLimiter {
-	myLeakyLimiterOnce.Do(func() {
-		// 设置桶容量是capacity，每秒从桶中取出rate个请求处理
-		myLeakyLimiter = &LeakyBucketLimiter{rate: 200, capacity: 500}
-	})
-	return myLeakyLimiter
-}
-
-// ------------- 令牌桶限流器
-
-var (
-	myTokenLimiterOnce sync.Once
-	myTokenLimiter     *TokenBucketLimiter
-)
-
-func NewTokenBucketLimiter() *TokenBucketLimiter {
-	myTokenLimiterOnce.Do(func() {
-		// 设置桶容量是capacity，放入令牌速率是rate个/s
-		myTokenLimiter = &TokenBucketLimiter{rate: 200, capacity: 500}
-	})
-	return myTokenLimiter
-}
-
 // -------------- channel限流器
 
 var (

@@ -1,7 +1,6 @@
 package router
 
 import (
-	"github.com/BingguWang/limiter-study/handler"
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,7 +10,7 @@ var routeWorkSlice = []RouteWork{}
 
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
-	injectRouteWork(handler.TestRouter)
+	injectRouteWork(TestRouter)
 	for _, work := range routeWorkSlice {
 		work(r)
 	}

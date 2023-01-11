@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-func counterHandler() gin.HandlerFunc {
+func CounterHandler() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		instance := global.GetMyInstance()
 
@@ -24,7 +24,6 @@ func counterHandler() gin.HandlerFunc {
 			return
 		}
 
-		// 每次请求自增一次计数
 		fmt.Println("SucceedCount:", instance.SucceedCount)
 
 		// 模拟业务处理

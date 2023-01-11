@@ -1,11 +1,13 @@
-package handler
+package router
 
 import (
+	"github.com/BingguWang/limiter-study/global"
+	"github.com/BingguWang/limiter-study/handler"
 	"github.com/gin-gonic/gin"
 )
 
 func TestRouter(r *gin.Engine) {
-	r.Use(IncrementTraceID)
+	r.Use(global.IncrementTraceID)
 	group := r.Group("/test")
 	{
 		// 测试计数器
@@ -18,13 +20,13 @@ func TestRouter(r *gin.Engine) {
 		但是由于时间窗每经过1s就会重置计数，就无法识别到这种请求超限，然而这200ms可能导致服务器崩溃
 		缺点：仍无法应对在时间周期的临界点出现的突发流量，或者说它的痛点就是在时间周期临界点可能出现错误判断而导致限流失败系统崩溃
 		*/
-		group.GET("/counter", counterHandler())
+		group.GET("/counter", handler.CounterHandler())
 
 		// 测试滑动窗口
 		/**
 
 		 */
-		group.GET("/sliding", slidingHandler())
+		group.GET("/sliding", handler.SlidingHandler())
 
 		// 测试漏桶
 		/**
@@ -34,7 +36,7 @@ func TestRouter(r *gin.Engine) {
 		桶满的时候(而且桶满的状态是可能会持续一段时间的，所以不是很适合突发流量)，直接返回请求频率超限的错误码或者页面。
 		面对突发流量时会有大量请求失败(运行结果可以看到),也就是会有大量的请求被限流而处理失败, 所以不适合电商抢购和微博出现热点事件等场景的限流。
 		*/
-		group.GET("/leaky", leakyHandler())
+		group.GET("/leaky", handler.LeakyHandler())
 
 		// 测试令牌桶
 		/**
@@ -48,7 +50,7 @@ func TestRouter(r *gin.Engine) {
 
 		适合电商抢购或者微博出现热点事件这种场景，因为在限流的同时可以应对一定的突发流量。
 		*/
-		group.GET("/token", tokenHandler())
+		group.GET("/token", handler.TokenHandler())
 
 		// 缓存channel
 		/**
@@ -56,16 +58,16 @@ func TestRouter(r *gin.Engine) {
 		请求来的时候先往channel里塞一个"门票",塞不进说明满了,返回错误
 		请求处理完，需要取走自己的票，其实这个类似于漏桶，只不过这里没有时间的概念，而且“流出速率”不是恒定的，而是由请求处理完自己来流出
 		*/
-		group.GET("/channel", channelHandler())
+		group.GET("/channel", handler.ChannelHandler())
 
 		// 官方的限流器"golang.org/x/time/rate" [是基于令牌桶实现的]
 		// time/rate的Allow的用法,请求没有令牌就直接返回错误
-		group.GET("/time-rate-allow", timeRateAllowHandler())
+		group.GET("/time-rate-allow", handler.TimeRateAllowHandler())
 
 		// time/rate的wait的用法, 不丢请求，没有令牌时请求可以等待有令牌
-		group.GET("/time-rate-wait", timeRateWaitHandler())
+		group.GET("/time-rate-wait", handler.TimeRateWaitHandler())
 
-		group.GET("/time-rate-reserve", timeRateReserveHandler())
+		group.GET("/time-rate-reserve", handler.TimeRateReserveHandler())
 
 		// 分布式限流 Redis + Lua 分布式限流
 		/**

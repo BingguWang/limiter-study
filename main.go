@@ -19,8 +19,8 @@ func init() {
 
 	log.Println("开始初始化限流器...")
 	limiter.NewCounterLimiter()
-	//handler.NewLeakyBucketLimiter()
-	//handler.NewTokenBucketLimiter()
+	limiter.NewLeakyBucketLimiter()
+	limiter.NewTokenBucketLimiter()
 	//handler.NewChannelLimiter()
 	//handler.NewTimeRateLimiter()
 

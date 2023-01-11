@@ -9,8 +9,7 @@ import (
 	"time"
 )
 
-// Allow方法是直接返回对错结果
-func timeRateAllowHandler() gin.HandlerFunc {
+func TimeRateAllowHandler() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		instance := global.GetMyInstance()
 		traceId := ctx.Query("traceId")
@@ -37,8 +36,8 @@ func timeRateAllowHandler() gin.HandlerFunc {
 	}
 }
 
-// wait方法是避免请求返回错误而是给请求等待的时间
-func timeRateWaitHandler() gin.HandlerFunc {
+// TimeRateWaitHandler wait方法是避免请求返回错误而是给请求等待的时间
+func TimeRateWaitHandler() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		start := time.Now()
 		instance := global.GetMyInstance()
@@ -68,8 +67,8 @@ func timeRateWaitHandler() gin.HandlerFunc {
 	}
 }
 
-// reserve不管token数都返回一个reservation
-func timeRateReserveHandler() gin.HandlerFunc {
+// TimeRateReserveHandler reserve不管token数都返回一个reservation
+func TimeRateReserveHandler() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		start := time.Now()
 		instance := global.GetMyInstance()

@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func slidingHandler() gin.HandlerFunc {
+func SlidingHandler() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		instance := global.GetMyInstance()
 		traceId := ctx.Query("traceId")
