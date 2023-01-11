@@ -1,6 +1,7 @@
 package limiter
 
 import (
+	"github.com/BingguWang/limiter-study/global"
 	"log"
 	"sync"
 	"time"
@@ -16,7 +17,7 @@ var (
 func NewCounterLimiter() *CounterLimiter {
 	myCounterLimiterOnce.Do(func() {
 		// 每秒允许rate个请求
-		myCounterLimiter = &CounterLimiter{rate: 500, cycle: time.Duration(time.Second.Nanoseconds())}
+		myCounterLimiter = &CounterLimiter{rate: 200, cycle: time.Duration(time.Second.Nanoseconds())}
 	})
 	return myCounterLimiter
 }
@@ -33,22 +34,23 @@ type CounterLimiter struct {
 func (c *CounterLimiter) Allow(traceid int) bool {
 	c.lock.Lock()
 	defer c.lock.Unlock()
-	// 先判断是否达到阈值
-	if c.rate < c.count {
-		// 判断是否在窗口内
-		if time.Now().Sub(c.begin) >= c.cycle {
-			c.Reset(time.Now())
-			return true
-		} else {
+	instance := global.GetMyInstance()
+
+	if time.Now().Sub(c.begin) >= c.cycle { // 窗口外
+		c.Reset(time.Now())
+		instance.SucceedCount++
+		return true
+	} else { // 窗口内
+		if c.rate <= c.count { // 到达阈值
+			instance.FailedCount++
 			log.Println("被限流了! traceId:  ", traceid)
 			return false
 		}
-	} else {
+		instance.SucceedCount++
 		c.count++
 		return true
 	}
 }
-
 
 //func (limit *CounterLimiter) Set(rate int, cycle time.Duration) {
 //	limit.rate = rate
